@@ -1,0 +1,105 @@
+@page "/books"
+@using BookApp.Core
+@using MyBooksClient.Services
+@inject BookService BookService
+@inject NavigationManager NavigationManager
+
+<h3>Books</h3>
+
+@if (books == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Year</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.Year</td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-sm" @onclick="(() => EditBook(book.Id))">Edit</button>
+
+                        <button @onclick="() => DeleteBook(book.Id)" class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <button class="page-link" @onclick="PreviousPage" disabled=@(pageIndex == 0) aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </button>
+            </li>
+            <li class="page-item">
+                <button class="page-link" @onclick="NextPage" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <br />
+    <button class="btn btn-primary" @onclick="NavigateToCreateBook">Create Book</button>
+}
+
+@code {
+
+    private int pageSize = 5;
+    private int pageIndex = 0;
+    private IEnumerable<BookApp.Core.Book> books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await BookService.GetAllBooksAsync(pageSize, pageIndex);
+    }
+    private async Task DeleteBook(long id)
+    {
+        await BookService.DeleteBookAsync(id);
+        books = await BookService.GetAllBooksAsync(pageSize, pageIndex);
+    }
+
+    private void EditBook(long id)
+    {
+        NavigationManager.NavigateTo($"/books/edit/{id}");
+    }
+
+    private void NavigateToCreateBook()
+    {
+        NavigationManager.NavigateTo("/books/add");
+    }
+
+    private async Task PreviousPage()
+    {
+        if (pageIndex > 0)
+        {
+            pageIndex--;
+            books = await BookService.GetAllBooksAsync(pageSize, pageIndex);
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (books.Count() > 0)
+        {
+            pageIndex++;
+            books = await BookService.GetAllBooksAsync(pageSize, pageIndex);
+        }
+    }
+}

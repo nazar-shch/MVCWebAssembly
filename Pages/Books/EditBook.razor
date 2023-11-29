@@ -1,0 +1,51 @@
+@page "/books/edit/{id:long}"
+@using BookApp.Core
+@using MyBooksClient.Services
+@inject BookService BookService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Book</h3>
+
+<EditForm Model="book" OnValidSubmit="UpdateBook">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="Title">Title:</label>
+        <InputText id="Title" class="form-control" @bind-Value="book.Title" />
+        <ValidationMessage For="() => book.Title" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label for="Author">Author:</label>
+        <InputText id="Author" class="form-control" @bind-Value="book.Author" />
+        <ValidationMessage For="() => book.Author" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label for="Year">Year:</label>
+        <InputNumber id="Year" class="form-control" @bind-Value="book.Year" />
+        <ValidationMessage For="() => book.Year" />
+    </div>
+    <br />
+
+    <button type="submit" class="btn btn-primary">Update Book</button>
+</EditForm>
+
+@code {
+    [Parameter] public long id { get; set; }
+    private Book book = new Book();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        book = await BookService.GetBookByIdAsync(id);
+    }
+
+    private async Task UpdateBook()
+    {
+        await BookService.UpdateBookAsync(id, book);
+        NavigationManager.NavigateTo("/books");
+    }
+}

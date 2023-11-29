@@ -1,0 +1,29 @@
+@page "/books/add"
+@using BookApp.Core
+@using MyBooksClient.Services
+@inject BookService BookService
+@inject NavigationManager NavigationManager
+
+<h3>Add a New Book</h3>
+
+<EditForm Model="newBook" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="title" @bind-Value="newBook.Title" placeholder="Title" />
+    <InputText id="author" @bind-Value="newBook.Author" placeholder="Author" />
+    <InputNumber id="price" @bind-Value="newBook.Year" placeholder="Yrar" />
+
+   <button type="submit" class="btn btn-primary add-book">Add Book</button>
+</EditForm>
+
+@code {
+    private Book newBook = new Book();
+
+    private async Task HandleValidSubmit()
+    {
+        await BookService.AddBookAsync(newBook);
+        newBook = new Book();
+        NavigationManager.NavigateTo("/books");
+    }
+}
