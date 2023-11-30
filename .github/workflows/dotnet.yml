@@ -22,8 +22,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build
-  
-      - name: Deploy to Development
+    - name: Deploy to Development
       uses: azure/webapps-deploy@v1
       with:
         app-name: 'mwoapp'
