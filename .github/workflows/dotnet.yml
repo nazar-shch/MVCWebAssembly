@@ -28,5 +28,5 @@ jobs:
         app-name: 'mwoapp'
         slot-name: 'development'
         publish-profile: ${{ secrets.SECRET_MWOAPP }}
-        package: ./MWOAPP # Ścieżka do zbudowanej aplikacji
+        package: ./bin/Release/net7.0/publish/wwwroot # Ścieżka do zbudowanej aplikacji
 
