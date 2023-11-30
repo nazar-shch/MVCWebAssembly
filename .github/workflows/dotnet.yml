@@ -29,3 +29,4 @@ jobs:
         slot-name: 'development'
         publish-profile: ${{ secrets.SECRET_MWOAPP }}
         package: ./MWOAPP # Ścieżka do zbudowanej aplikacji
+
