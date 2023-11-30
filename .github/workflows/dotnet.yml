@@ -32,4 +32,12 @@ jobs:
         slot-name: 'development'
         publish-profile: ${{ secrets.SECRET_MWOAPP }}
         package: ./bin/Release/net7.0/publish/wwwroot # Ścieżka do zbudowanej aplikacji
+    - name: Save Version to File
+      run: echo $(date +'%Y%m%d%H%M') > version.txt
+    - name: Upload Version File as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: version-file
+        path: version.txt
+
 
