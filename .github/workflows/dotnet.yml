@@ -12,6 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    # Dodaj ten krok przed budowaniem projektu
+    - name: Set Version Suffix
+      run: echo "VersionSuffix=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -22,11 +25,11 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build
-  
-      - name: Deploy to Development
+    - name: Deploy to Development
       uses: azure/webapps-deploy@v1
       with:
         app-name: 'mwoapp'
         slot-name: 'development'
         publish-profile: ${{ secrets.SECRET_MWOAPP }}
-        package: ./MWOAPP # Ścieżka do zbudowanej aplikacji
+        package: ./bin/Release/net7.0/publish/wwwroot # Ścieżka do zbudowanej aplikacji
+
